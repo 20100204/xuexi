@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"math"
 	"reflect"
 	"runtime"
+	"strings"
 )
 
 func eval(a, b int, op string) int {
@@ -54,7 +57,42 @@ func sum(nums ...int) int {
 	}
 	return s
 }
+func adder()func(int)int  {
+	sum := 0
+	return func(i int) int {
+		sum += i
+		return sum
+	}
+}
+func fibonacci() intGen  {
+	a,b := 0,1
+	return func() int {
+		a,b = b,a+b
+		return a
+	}
+
+}
+type intGen func() int
+
+func (i intGen) Read(p []byte) (n int, err error) {
+	 next := i()
+	 if next>3 {
+	 	return 0,io.EOF //io.eof  scanner扫描到后会自动结束
+	 }
+	 s := fmt.Sprintf("%d\n",next) //转成字符串并换一行
+	 return strings.NewReader(s).Read(p)
+}
+
+func printFileContents(reader io.Reader){
+	scanner := bufio.NewScanner(reader)
+	for scanner.Scan(){
+		fmt.Println(scanner.Text())
+	}
+}
+
 func main() {
+	f := fibonacci()
+	printFileContents(f)
 	//fmt.Println(eval(1, 2, "*"))
 	//fmt.Println(div(3, 2))
 	//q, r := bdiv(3, 2) //写完后面的函数后，按住ctrl+alt+v 会自动生成函数的返回命名参数
@@ -65,5 +103,9 @@ func main() {
 	//    fmt.Println(apply(func(i int, i2 int) int {
 	//		return int(math.Pow(float64(i),float64(i2)))
 	//	},3,4))
-	fmt.Println(sum(1, 2, 3, 4))
+	//fmt.Println(sum(1, 2, 3, 4))
+	//a := adder()
+	//for i :=0;i<10;i++{
+	//	fmt.Println(a(i))
+	//}
 }

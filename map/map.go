@@ -44,5 +44,24 @@ func main() {
 	} else {
 		fmt.Println("unknown")
 	}
+	fmt.Println(norepeating("aaabbccesaabc"))
+	fmt.Println(norepeating("123412"))
+	fmt.Println(norepeating("一二三一"))
+}
 
+//最长不重复子串
+func norepeating(s string) int  {
+	lastoccurred := make(map[rune]int)
+	start := 0;
+	maxLength := 0;
+	for i,ch := range []rune(s){
+		if lastI,ok :=  lastoccurred[ch];ok && (lastI >= start){
+			start = lastoccurred[ch] +1
+		}
+		if i-start+1 >maxLength {
+			maxLength = i - start +1
+		}
+		lastoccurred[ch] = i
+	}
+	return  maxLength
 }
